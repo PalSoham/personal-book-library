@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+ 
+@theme {
+  --color-pastel-lavender: #EDE9FE;
+  --color-pastel-mint:     #D1FAE5;
+  --color-pastel-peach:    #FED7AA;
+  --color-pastel-rose:     #FCE7F3;
+  --color-pastel-sky:      #E0F2FE;
+  --color-pastel-cream:    #FEF9C3;
+}
+ 
+/* ── 3. Global styles ── */
+:root {
+  --bg-main: #F8F7FF;
+  --accent:  #7C3AED;
+}
+ 
+body {
+  background-color: var(--bg-main);
+  color: #1F2937;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+ 
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F8F7FF; }
+::-webkit-scrollbar-thumb { background: #C4B5FD; border-radius: 3px; }
+ 
+/* Input focus glow */
+.input-focus:focus {
+  outline: none;
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+ 
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.1);
+}
+ 
+/* Pastel category chip classes */
+.chip-lavender { background: #EDE9FE; color: #6D28D9; }
+.chip-mint     { background: #D1FAE5; color: #065F46; }
+.chip-peach    { background: #FED7AA; color: #9A3412; }
+.chip-rose     { background: #FCE7F3; color: #9D174D; }
+.chip-sky      { background: #E0F2FE; color: #075985; }
+.chip-cream    { background: #FEF9C3; color: #854D0E; }
