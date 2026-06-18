@@ -5,13 +5,13 @@ A modern, responsive, and sleek web application designed to help book lovers man
 ## Preview
 
 ### Main Dashboard
-![Main Dashboard](screenshots/dashboard_main.png)
+![Main Dashboard](frontend/screenshots/dashboard_main.png)
 
 ### Add / Edit Book Modal
-![Add / Edit Book Modal](screenshots/add_book.png)
+![Add / Edit Book Modal](frontend/screenshots/add_book.png)
 
 ### Real-Time Search & Filtering
-![Real-Time Search & Filtering](screenshots/search_filtering.png)
+![Real-Time Search & Filtering](frontend/screenshots/search_filtering.png)
 
 ---
 
