@@ -2,6 +2,17 @@
 
 A modern, responsive, and sleek full-stack web application designed to help book lovers manage, filter, and track their reading collections. It provides real-time search, interactive ratings, reading statistics, and database persistence using MongoDB.
 
+## Preview
+
+### Main Dashboard
+![Main Dashboard](frontend/screenshots/dashboard_main.png)
+
+### Add / Edit Book Modal
+![Add / Edit Book Modal](frontend/screenshots/add_book.png)
+
+### Real-Time Search & Filtering
+![Real-Time Search & Filtering](frontend/screenshots/search_filtering.png)
+
 ---
 
 ## 📂 Project Structure
