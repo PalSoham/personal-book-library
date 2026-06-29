@@ -1,4 +1,4 @@
-#  BookShelf - Personal Library Dashboard (Full-Stack)
+#  BookShelf - Personal Library
 
 A modern, responsive, and sleek full-stack web application designed to help book lovers manage, filter, and track their reading collections. It provides real-time search, interactive ratings, reading statistics, and database persistence using MongoDB.
 
@@ -15,7 +15,7 @@ A modern, responsive, and sleek full-stack web application designed to help book
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 This project uses a monorepo structure separating the frontend application and backend server:
 
@@ -40,7 +40,7 @@ book-cards/ (Root)
 
 ---
 
-## ✨ Features
+##  Features
 
 - **Library Dashboard:** Instantly view statistics of your library, including total books, books read, and books unread.
 - **Real-Time Search & Filtering:** Filter your library instantly by book title or author.
@@ -68,7 +68,7 @@ book-cards/ (Root)
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 Make sure you have [Node.js](https://nodejs.org/) installed (version 18+ recommended) and a running instance of **MongoDB** (local service or MongoDB Atlas cluster).
@@ -97,7 +97,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed (version 18+ recomme
 
 ---
 
-## 🏃 Running the Application
+##  Running the Application
 
 To run the full-stack application locally, you will need to start both the server and client.
 
@@ -117,7 +117,7 @@ Vite will host the local development server at [http://localhost:5173](http://lo
 
 ---
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 The backend routes are mounted under `/api/books` and perform RESTful operations:
 
@@ -130,7 +130,7 @@ The backend routes are mounted under `/api/books` and perform RESTful operations
 
 ---
 
-## 🛡️ Validation Rules
+##  Validation Rules
 
 The backend server strictly enforces these rules on input payloads, returning descriptive HTTP 400 Bad Request error lists for invalid fields:
 1. **Title**: Required (cannot be empty or whitespace).
