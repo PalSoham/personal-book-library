@@ -54,19 +54,36 @@ const DEFAULT_BOOKS = [
 
 export default function Home() {
   const [search, setSearch] = useState('');
-  const [books, setBooks] = useState(() => {
-    const saved = localStorage.getItem('personal_library_books');
-    return saved ? JSON.parse(saved) : DEFAULT_BOOKS;
-  });
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const [editingBook, setEditingBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Sync state to LocalStorage
+  // Fetch all books from Express server on mount
+  const fetchBooks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('http://localhost:5000/api/books');
+      if (!response.ok) {
+        throw new Error('Failed to fetch books from server');
+      }
+      const data = await response.json();
+      setBooks(data);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Server connection error. Please make sure the backend is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('personal_library_books', JSON.stringify(books));
-  }, [books]);
+    fetchBooks();
+  }, []);
 
   // Real-time Search and Filtering (Title or Author)
   const filteredBooks = books.filter(
@@ -90,36 +107,63 @@ export default function Home() {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to remove this book from your library?')) return;
-    setBooks((prevBooks) => prevBooks.filter((book) => String(book.id || book._id) !== String(id)));
+    try {
+      const response = await fetch(`http://localhost:5000/api/books/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete the book');
+      }
+      setBooks((prevBooks) => prevBooks.filter((book) => (book._id || book.id) !== id));
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
-  const handleSave = (formData) => {
+  const handleSave = async (formData) => {
     setSaving(true);
-    // Simulate brief transition for better UX
-    setTimeout(() => {
+    try {
+      let response;
       if (editingBook) {
         // Edit flow
-        setBooks((prevBooks) =>
-          prevBooks.map((book) =>
-            String(book.id || book._id) === String(editingBook.id || editingBook._id)
-              ? { ...book, ...formData }
-              : book
-          )
-        );
+        response = await fetch(`http://localhost:5000/api/books/${editingBook._id || editingBook.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
       } else {
         // Add flow
-        const newBook = {
-          id: `book-${Date.now()}`,
-          ...formData,
-        };
-        setBooks((prevBooks) => [newBook, ...prevBooks]);
+        response = await fetch('http://localhost:5000/api/books', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
       }
-      setSaving(false);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to save the book details');
+      }
+
+      if (editingBook) {
+        setBooks((prevBooks) =>
+          prevBooks.map((book) => ((book._id || book.id) === (editingBook._id || editingBook.id) ? data : book))
+        );
+      } else {
+        setBooks((prevBooks) => [data, ...prevBooks]);
+      }
+      
       setShowModal(false);
       setEditingBook(null);
-    }, 150);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -165,7 +209,24 @@ export default function Home() {
         </div>
 
         {/* Library Inventory Grid */}
-        {filteredBooks.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-12 h-12 rounded-full border-4 border-violet-100 border-t-violet-600 animate-spin mb-4" />
+            <p className="text-gray-400 text-sm font-semibold tracking-wide">Syncing library shelf...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 text-center max-w-md mx-auto shadow-sm animate-in fade-in duration-300">
+            <div className="w-16 h-16 rounded-2xl bg-pastel-rose text-rose-600 flex items-center justify-center mx-auto text-2xl mb-4">⚠️</div>
+            <h3 className="font-bold text-gray-800 text-base mb-2">Connection Problem</h3>
+            <p className="text-gray-500 text-xs leading-relaxed mb-6">{error}</p>
+            <button
+              onClick={fetchBooks}
+              className="px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-violet-100 cursor-pointer"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : filteredBooks.length === 0 ? (
           /* Empty State */
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-20 px-6 flex flex-col items-center justify-center text-center max-w-xl mx-auto">
             <div className="w-20 h-20 rounded-3xl bg-pastel-lavender flex items-center justify-center mb-6 text-violet-600 shadow-inner">
@@ -200,7 +261,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
             {filteredBooks.map((book) => (
               <BookCard
-                key={book.id || book._id}
+                key={book._id || book.id}
                 book={book}
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}
